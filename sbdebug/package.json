@@ -1,0 +1,12 @@
+{
+	"name": "sbdebug",
+	"version": "0.1.0",
+	"description": "Simple remote JS debugging library",
+	"main": "app.js",
+	"author": {
+		"name": "crc-32"
+	},
+	"dependencies": {
+		"express": "^4.16.4"
+	}
+}
