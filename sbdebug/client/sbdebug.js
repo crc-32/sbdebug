@@ -7,13 +7,34 @@
 		if (enableConsole) {
 
 			console.log = function (message) {
-				window.debug.send({ type: "ConsoleOutput", verbosity: "log", message: message });
+				var outStr = "";
+				for (var i = 0; i < arguments.length; i++) {
+					outStr += arguments[i];
+					if (arguments.length != i) {
+						outStr += " ";
+					}
+				}
+				window.debug.send({ type: "ConsoleOutput", verbosity: "log", message: outStr });
 			}
 			console.info = function (message) {
-				window.debug.send({ type: "ConsoleOutput", verbosity: "info", message: message });
+				var outStr = "";
+				for (var i = 0; i < arguments.length; i++) {
+					outStr += arguments[i];
+					if (arguments.length != i) {
+						outStr += " ";
+					}
+				}
+				window.debug.send({ type: "ConsoleOutput", verbosity: "info", message: outStr });
 			}
 			console.warn = function (message) {
-				window.debug.send({ type: "ConsoleOutput", verbosity: "warn", message: message });
+				var outStr = "";
+				for (var i = 0; i < arguments.length; i++) {
+					outStr += arguments[i];
+					if (arguments.length != i) {
+						outStr += " ";
+					}
+				}
+				window.debug.send({ type: "ConsoleOutput", verbosity: "warn", message: outStr });
 			}
 
 			this.worker = new Worker("js/sbdebug-console.js");
