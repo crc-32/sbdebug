@@ -1,17 +1,44 @@
 'use strict';
+var debugPort = 3000
+var sitePort = 8080
+
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var readline = require('readline');
 
 var app = express();
+var site = express();
 var lastCmd = null;
+var lastHtml = null;
+var consBuf = "";
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout
 });
 
+function log(message) {
+	var outStr = "";
+	for (var i = 0; i < arguments.length; i++) {
+		if (typeof arguments[i] === 'object' && arguments[i] !== null) {
+			console.log(arguments[i]);
+			consBuf += JSON.stringify(arguments[i]) + "\n";
+		} else {
+			outStr += arguments[i];
+			if (arguments.length != i) {
+				outStr += " ";
+			}
+		}
+	}
+	console.log(outStr);
+	consBuf += outStr + "\n";
+}
+
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+site.set('view engine', 'pug');
+site.use(express.static(__dirname));
 app.use(function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -19,44 +46,64 @@ app.use(function (req, res, next) {
 });
 
 app.post("/", function (req, res) {
-	console.log(" ");
+	log(" ");
 	switch (req.body.type) {
 		case "Event":
-			console.log("Event: " + req.body.event);
+			log("Event: " + req.body.event);
 			res.sendStatus(200);
 			break;
 		case "ConsoleOutput":
 			if (req.body.message == undefined) {
-				console.log("Object Logged: (includes debug meta)");
-				console.log(req.body);
+				log("Object Logged: (includes debug meta)");
+				log(req.body);
 			} else {
 				switch (req.body.verbosity) {
 					case "log":
-						console.log(req.body.message);
+						log(req.body.message);
 						break;
 					case "warn":
-						console.warn("[WARN] " + req.body.message);
+						log("[WARN] " + req.body.message);
 						break;
 					case "info":
-						console.info("[INFO] " + req.body.message);
+						log("[INFO] " + req.body.message);
 						break;
 				}
 			}
 			break;
 		case "Error":
-			console.log("Error at " + req.body.line + ":" + req.body.col + " on url '" + req.body.url + "': '" + req.body.message + "'");
+			log("Error at " + req.body.line + ":" + req.body.col + " on url '" + req.body.url + "': '" + req.body.message + "'");
 			break;
 		case "ConsoleReturn":
 			lastCmd = null;
-			console.log("Return: " + req.body.message);
+			log("Return: " + req.body.message);
 			break;
 		default:
-			console.log("Unknown debug message:");
-			console.log(req.body);
+			log("Unknown debug message:");
+			log(req.body);
 			res.sendStatus(400);
 			break;
 	}
 	rl.prompt();
+});
+
+site.get("/", function (req, res) {
+	var title = "SbDebug on " + req.hostname;
+	res.render("index", { "title": title, "debugPort": debugPort, "sitePort": sitePort});
+});
+
+app.get("/consoleContent", function (req, res) {
+	res.send(consBuf);
+});
+
+app.post("/consoleSend", function (req, res) {
+	consBuf += "js>" + req.body.msg + "\n";
+	console.log(req.body.msg)
+	lastCmd = req.body.msg;
+	res.sendStatus(200);
+});
+
+site.listen(sitePort, function () {
+	log("Site started on port", sitePort);
 });
 
 app.get("/cmd", function (req, res) {
@@ -68,8 +115,17 @@ app.get("/cmd", function (req, res) {
 	}
 });
 
-app.listen(3000, function () {
-	console.log("Started on port 3000");
+app.get("/html", function (req, res) {
+	res.send(lastHtml);
+});
+
+app.post("/setHtml", function (req, res) {
+	lastHtml = req.body.htmlMsg;
+	res.sendStatus(200);
+});
+
+app.listen(debugPort, function () {
+	log("Debugger started on port", debugPort);
 	rl.setPrompt('js>');
 	rl.on('line', function (line) {
 		if (line.trim() != "") {
