@@ -1,7 +1,2 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/sbdebug/node_modules
-/sbdebug/.vs
-/sbdebug/package-lock.json
+﻿node_modules/
+.vs
