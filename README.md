@@ -20,4 +20,5 @@ Currently, you can:
 - Run javascript on the client via the built-in console
 - View error messages as they arrive, complete with line and column numbers
 - Recieve all console log/warn/info calls
+- Live test CSS
 - More to come!
