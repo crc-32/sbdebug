@@ -5,7 +5,8 @@ const sbdbgCmd = {
     "devDis": 3,
     "devLog": 4,
     "devError": 5,
-    "cssEdit": 6
+    "cssEdit": 6,
+    "browserInfo": 7
 };
 var socket = null;
 
@@ -26,6 +27,10 @@ $(function() {
             case sbdbgCmd.devError:
                 $('#console-table').append(`<tr><th scope=\"row\">error</th><td>${cmd["url"]}:${cmd["line"]}:${cmd["col"]}: ${cmd["data"]}</td></tr>`);
                 console.log(cmd["obj"]);
+                break;
+            case sbdbgCmd.browserInfo:
+                $('#useragent-status').text(cmd["useragent"]);
+                break;
        }
    };
 
