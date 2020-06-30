@@ -4,7 +4,8 @@ const sbdbgCmd = {
     "devCon": 2,
     "devDis": 3,
     "devLog": 4,
-    "devError": 5
+    "devError": 5,
+    "cssEdit": 6
 };
 var socket = null;
 
@@ -33,5 +34,10 @@ $(function() {
        const evt = $('#eval-text').val();
        $('#console-table').append(`<tr><th scope=\"row\">eval</th><td>${evt}</td></tr>`);
        socket.send(JSON.stringify({"cmd": sbdbgCmd.eval, "data": evt})); 
+   });
+
+   $('#css-text').on('keyup', function(e) {
+       const css = $('#css-text').val();
+       socket.send(JSON.stringify({"cmd": sbdbgCmd.cssEdit, "data": css}));
    });
 });

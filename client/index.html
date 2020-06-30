@@ -17,6 +17,8 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 
+    <link rel="stylesheet" href="css/client.css">
+
     <script src="js/client.js"></script>
 </head>
 <body>
@@ -29,6 +31,9 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" id="console-tab" data-toggle="tab" href="#console" role="tab" aria-controls="console" aria-selected="false">Console</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="css-tab" data-toggle="tab" href="#css" role="tab" aria-controls="css" aria-selected="false">CSS Edit</a>
         </li>
     </ul>
     <div class="tab-content" id="tabContent">
@@ -48,6 +53,11 @@
                 </table>
                 <textarea id="eval-text"></textarea>
                 <input type="button" id="eval-submit" class="btn btn-primary" value="Evaluate"/>
+            </div>
+        </div>
+        <div class="tab-pane fade show" id="css" role="tabpanel" aria-labelledby="css-tab">
+            <div class="container text-center">
+                <textarea id="css-text"></textarea>
             </div>
         </div>
     </div>

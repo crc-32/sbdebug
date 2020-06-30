@@ -4,7 +4,8 @@ const sbdbgCmd = {
     "devCon": 2,
     "devDis": 3,
     "devLog": 4,
-    "devError": 5
+    "devError": 5,
+    "cssEdit": 6
 };
 
 if (window.sbdserver === undefined || window.sbdserver === null) {
@@ -12,6 +13,10 @@ if (window.sbdserver === undefined || window.sbdserver === null) {
 }
 
 var socket = new WebSocket(window.sbdserver);
+
+var cssEl = document.createElement('style');
+cssEl.id = 'sbdebug-customcss'
+document.getElementsByTagName('HEAD')[0].appendChild(cssEl);
 
 function sendConsole(message, verbosity) {
     socket.send(JSON.stringify({"cmd": sbdbgCmd.devLog, "data": message, "verbosity": verbosity}));
@@ -69,6 +74,8 @@ socket.onmessage = function(ev) {
         case sbdbgCmd.refresh:
             document.location.reload();
             break;
+        case sbdbgCmd.cssEdit:
+            document.getElementById('sbdebug-customcss').innerHTML = cmd["data"];
     }
 };
 
